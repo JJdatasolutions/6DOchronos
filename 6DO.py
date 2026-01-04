@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Entraînement Vocabulaire Pelckmans</title>
+    <style>
+        :root { --primary: #3498db; --success: #2ecc71; --danger: #e74c3c; --bg: #121212; --card: #1e1e1e; --accent: #f1c40f; }
+        body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        #container { width: 95%; max-width: 1100px; margin: 40px auto; text-align: center; }
+        
+        .selector-container { background: var(--card); padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #333; }
+        select { padding: 12px; background: #333; color: white; border-radius: 6px; border: 1px solid var(--primary); font-size: 16px; width: 300px; cursor: pointer; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .set-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; transition: 0.3s; }
+        .set-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 15px; width: 100%; margin-top: 10px; transition: 0.3s; font-weight: bold; }
+        .btn-secondary { background: #555; }
+        .btn:hover { filter: brightness(1.2); }
+
+        .screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 100; justify-content: center; align-items: center; flex-direction: column; }
+        
+        #word-display { font-size: 60px; font-weight: bold; margin: 40px 0; color: var(--accent); text-shadow: 2px 2px 10px rgba(0,0,0,0.5); padding: 0 20px; text-align: center; }
+        #timer-container { width: 70%; height: 12px; background: #333; border-radius: 6px; margin: 20px auto; overflow: hidden; }
+        #timer-bar { width: 100%; height: 100%; background: var(--success); transition: width 1s linear; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #444; text-align: left; }
+        th { background: #333; color: var(--primary); }
+        .scroll-area { width: 90%; max-height: 70vh; overflow-y: auto; background: #1e1e1e; padding: 20px; border-radius: 10px; }
+        
+        input[type="text"] { background: #333; color: white; border: 1px solid #555; padding: 8px; width: 90%; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h1>Entraînement Vocabulaire Pelckmans</h1>
+    <p style="color: #888;">Elke reeks bevat 14 woorden (9 nieuwe + 5 herhalingen).</p>
+    
+    <div class="selector-container">
+        <label style="margin-right: 15px;">Kies een Thema:</label>
+        <select id="trajet-select" onchange="generateSets(this.value)">
+            <option value="">-- Maak een keuze --</option>
+            <option value="10">Thème 10 : L'Écologie</option>
+            <option value="11">Thème 11 : La Politique & Le Pays</option>
+            <option value="12">Thème 12 : Les Études & Métiers</option>
+        </select>
+    </div>
+
+    <div class="grid" id="set-grid"></div>
+</div>
+
+<div id="edit-screen" class="screen">
+    <h2 id="edit-title">Reeks Bewerken</h2>
+    <div class="scroll-area">
+        <table id="edit-table">
+            <thead>
+                <tr><th>Nederlands</th><th>Frans</th><th>Actie</th></tr>
+            </thead>
+            <tbody id="edit-body"></tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="addRow()" style="margin-top:10px;">+ Woord toevoegen</button>
+    </div>
+    <div style="display:flex; gap:15px; width: 90%; max-width: 500px; margin-top: 20px;">
+        <button class="btn" onclick="saveAndStart()">🚀 Opslaan en Starten</button>
+        <button class="btn btn-secondary" onclick="closeEdit()">Annuleren</button>
+    </div>
+</div>
+
+<div id="exercise" class="screen">
+    <div id="info-header" style="font-size: 1.2rem; color: #aaa;"></div>
+    <div id="timer-container"><div id="timer-bar"></div></div>
+    <div id="word-display">Laden...</div>
+    <div style="display:flex; gap:15px;">
+        <button class="btn" style="width:140px; background:#555;" id="pause-btn" onclick="togglePause()">Pause</button>
+        <button class="btn" style="width:140px; background:var(--danger);" onclick="location.reload()">Stoppen</button>
+    </div>
+</div>
+
+<div id="result" class="screen">
+    <h2 style="color: var(--success);">Reeks voltooid!</h2>
+    <div class="scroll-area">
+        <table>
+            <thead><tr><th>Nederlands</th><th>Frans</th></tr></thead>
+            <tbody id="res-body"></tbody>
+        </table>
+    </div>
+    <button class="btn" style="margin-top: 20px; width:250px;" onclick="location.reload()">Terug naar menu</button>
+</div>
+
+<script>
+const woordenLijst = [
+    // --- L'ÉCOLOGIE - Thema ID: 10 ---
+    {t:10, nl:"de bescherming van het milieu", fr:"la protection de l'environnement"},
+    {t:10, nl:"de bescherming van het milieu (behoud)", fr:"la sauvegarde de l'environnement"},
+    {t:10, nl:"de planeet beschermen", fr:"protéger la planète"},
+    {t:10, nl:"het klimaat redden", fr:"sauver le climat"},
+    {t:10, nl:"het respect voor de natuur", fr:"le respect de la nature"},
+    {t:10, nl:"de biodiversiteit beschermen", fr:"sauvegarder la biodiversité"},
+    {t:10, nl:"de ecosystemen beschermen", fr:"préserver les écosystèmes"},
+    {t:10, nl:"de groenen (politiek)", fr:"les écologistes / les écolos"},
+    {t:10, nl:"de duurzame ontwikkeling", fr:"le développement durable"},
+    {t:10, nl:"de groene economie", fr:"l'économie verte"},
+    {t:10, nl:"een uitdaging voor het milieu", fr:"un défi environnemental"},
+    {t:10, nl:"het recycleren / recycleren", fr:"le recyclage / recycler"},
+    {t:10, nl:"het hergebruik / hergebruiken", fr:"la récupération / récupérer"},
+    {t:10, nl:"het afval sorteren", fr:"trier les déchets"},
+    {t:10, nl:"het sorteren", fr:"le tri sélectief"},
+    {t:10, nl:"zero waste", fr:"le zéro déchet"},
+    {t:10, nl:"de overbodige verpakkingen", fr:"les emballages superflus"},
+    {t:10, nl:"wegwerpplastic", fr:"le plastique à usage unique"},
+    {t:10, nl:"biologisch afbreekbaar", fr:"biodégradable"},
+    {t:10, nl:"de klimaatverandering", fr:"le changement climatique"},
+    {t:10, nl:"de ecologische ramp", fr:"le désastre écologique"},
+    {t:10, nl:"vervuilen", fr:"polluer"},
+    {t:10, nl:"de vervuilende producten", fr:"les produits polluants"},
+    {t:10, nl:"de ontbossing", fr:"la déforestation"},
+    {t:10, nl:"giftig", fr:"toxique"},
+    {t:10, nl:"de opwarming van de aarde", fr:"le réchauffement climatique"},
+    {t:10, nl:"het smelten van de ijskappen", fr:"la fonte des glaciers"},
+    {t:10, nl:"de droogte", fr:"la sécheresse"},
+    {t:10, nl:"de hittegolf", fr:"la canicule"},
+    {t:10, nl:"de luchtvervuiling", fr:"la pollution atmosphérique"},
+    {t:10, nl:"het fijn stof", fr:"les particules fines"},
+    {t:10, nl:"de CO2 uitstoot", fr:"les émissions de CO2"},
+    {t:10, nl:"de vervuilingspiek", fr:"le pic de pollution"},
+    {t:10, nl:"bedreigde diersoorten", fr:"les espèces animales menacées"},
+    {t:10, nl:"de hernieuwbare energie", fr:"l'énergie renouvelable"},
+    {t:10, nl:"de energetische overgang", fr:"la transition énergétique"},
+    {t:10, nl:"zonnepanelen installeren", fr:"installer des panneaux solaires"},
+    {t:10, nl:"investeren in windmolens", fr:"investir dans des éoliennes"},
+    {t:10, nl:"carpoolen", fr:"faire du covoiturage"},
+
+    // --- LA POLITIQUE - Thema ID: 11 ---
+    {t:11, nl:"een burger", fr:"un citoyen / une citoyenne"},
+    {t:11, nl:"rechten en plichten hebben", fr:"avoir des droits et des devoirs"},
+    {t:11, nl:"het volk", fr:"le peuple"},
+    {t:11, nl:"de bevolking", fr:"la population"},
+    {t:11, nl:"vaderlandsliefde", fr:"le patriotisme"},
+    {t:11, nl:"de scheiding tussen Kerk en Staat", fr:"la séparation des Églises et de l'État"},
+    {t:11, nl:"verkozen worden door het volk", fr:"être élu par le peuple"},
+    {t:11, nl:"stemmen op", fr:"voter pour"},
+    {t:11, nl:"een stembureau", fr:"un bureau de vote"},
+    {t:11, nl:"een blanco stem", fr:"un vote blanc"},
+    {t:11, nl:"het stemrecht", fr:"le droit de vote"},
+    {t:11, nl:"de stemplicht", fr:"le vote obligatoire"},
+    {t:11, nl:"de democratie", fr:"la démocratie"},
+    {t:11, nl:"de dictatuur", fr:"la dictature"},
+    {t:11, nl:"de Republiek", fr:"la République"},
+    {t:11, nl:"de President", fr:"le Président"},
+    {t:11, nl:"de Grondwet", fr:"la Constitution"},
+    {t:11, nl:"de scheiding der machten", fr:"la séparation des pouvoirs"},
+    {t:11, nl:"de wetgevende macht", fr:"le pouvoir législatif"},
+    {t:11, nl:"de uitvoerende macht", fr:"le pouvoir exécutif"},
+    {t:11, nl:"de rechterlijke macht", fr:"le pouvoir judiciaire"},
+    {t:11, nl:"de politieke leiders", fr:"les dirigeants politiques"},
+    {t:11, nl:"het land besturen", fr:"diriger le pays"},
+    {t:11, nl:"de regering / regeren", fr:"le government / gouverner"},
+    {t:11, nl:"de Eerste Minister", fr:"le Premier Ministre"},
+    {t:11, nl:"een volksvertegenwoordiger", fr:"un député"},
+    {t:11, nl:"de wetten stemmen", fr:"voter les lois"},
+    {t:11, nl:"een wetsvoorstel", fr:"une proposition de loi"},
+    {t:11, nl:"de linkse en rechtse partijen", fr:"les partis de gauche et de droite"},
+    {t:11, nl:"extreem rechts / links", fr:"l'extrême-droite / l'extrême-gauche"},
+    {t:11, nl:"de Europese Unie", fr:"l'Union Européenne"},
+    {t:11, nl:"het leger", fr:"l'armée"},
+    {t:11, nl:"de sociale ongelijkheid", fr:"les inégalités sociales"},
+    {t:11, nl:"dakloos zijn / een SDF", fr:"être sans-abri / un SDF"},
+    {t:11, nl:"strijden tegen discriminatie", fr:"lutter contre les discriminations"},
+    {t:11, nl:"de taalgrens", fr:"la frontière linguistique"},
+    {t:11, nl:"Minister van Buitenlandse Zaken", fr:"le Ministre des Affaires Étrangères"},
+    {t:11, nl:"Asiel en Migratie", fr:"l'Asile et la Migration"},
+
+    // --- ÉTUDES & MÉTIERS - Thema ID: 12 ---
+    {t:12, nl:"de kleuterschool / lagere school", fr:"l'école maternelle / primaire"},
+    {t:12, nl:"de scholier", fr:"l'écolier, l'écolière"},
+    {t:12, nl:"de meester / de juf", fr:"le maître / la maîtresse"},
+    {t:12, nl:"de middelbare school", fr:"l'école secondaire"},
+    {t:12, nl:"het 6de middelbaar (rhetorica)", fr:"la rhéto"},
+    {t:12, nl:"het eindexamen (Frankrijk)", fr:"le baccalauréat"},
+    {t:12, nl:"les geven", fr:"enseigner"},
+    {t:12, nl:"het hoger onderwijs", fr:"l'enseignement supérieur"},
+    {t:12, nl:"de hogeschool / universiteit", fr:"la haute école / l'université"},
+    {t:12, nl:"de bachelor / master", fr:"le bachelier / le master"},
+    {t:12, nl:"de universiteitscampus", fr:"le campus universitaire"},
+    {t:12, nl:"het lessenrooster", fr:"l'horaire / l'emploi du temps"},
+    {t:12, nl:"vreemde talen", fr:"les langues étrangères"},
+    {t:12, nl:"wiskunde / aardrijkskunde", fr:"les maths / la géographie"},
+    {t:12, nl:"wetenschappen", fr:"les sciences"},
+    {t:12, nl:"afstandsonderwijs", fr:"le cours à distance"},
+    {t:12, nl:"een examen afleggen", fr:"passer un examen"},
+    {t:12, nl:"ijverig / aandachtig", fr:"appliqué / attentif"},
+    {t:12, nl:"zijn best doen", fr:"faire de son mieux"},
+    {t:12, nl:"spijbelen", fr:"sécher les cours"},
+    {t:12, nl:"slagen voor zijn jaar", fr:"réussir son année"},
+    {t:12, nl:"zakken / een herexamen hebben", fr:"rater son année / un examen de passage"},
+    {t:12, nl:"zijn diploma behalen", fr:"obtenir son diplôme"},
+    {t:12, nl:"op kot zitten", fr:"être en kot"},
+    {t:12, nl:"blokken / de blok", fr:"bloquer / le blocus"},
+    {t:12, nl:"studies verpleging", fr:"études d'infirmier"},
+    {t:12, nl:"studies rechten / geneeskunde", fr:"études de droit / de médecine"},
+    {t:12, nl:"handelaar / verkoper", fr:"commerçant / vendeur"},
+    {t:12, nl:"kok / ober / technieker", fr:"cuisinier / serveur / technicien"},
+    {t:12, nl:"dokter / verpleger", fr:"médecin / infirmier"},
+    {t:12, nl:"apotheker / tandarts / dierenarts", fr:"pharmacien / dentiste / vétérinaire"},
+    {t:12, nl:"advocaat / notaris / jurist", fr:"avocat / notaire / juriste"},
+    {t:12, nl:"steward(es) / piloot", fr:"steward / pilote"},
+    {t:12, nl:"journalist / schrijver / muzikant", fr:"journaliste / écrivain / musicien"},
+    {t:12, nl:"ambtenaar / vertaler / ingenieur", fr:"fonctionnaire / traducteur / ingénieur"}
+];
+
+let allSets = [];
+let currentSetIdx = 0, wordIdx = 0, timeLeft = 8, isPaused = false, interval;
+
+function generateSets(themaNum) {
+    const grid = document.getElementById('set-grid');
+    grid.innerHTML = '';
+    if (!themaNum) return;
+
+    const gefilterd = woordenLijst.filter(w => w.t == themaNum);
+    allSets = [];
+    let currentPointer = 0;
+
+    // Genereer 10 reeksen
+    for (let i = 0; i < 10; i++) {
+        let set = [];
+        if (i === 0) {
+            for(let k=0; k<14; k++) {
+                set.push(gefilterd[k % gefilterd.length]);
+            }
+            currentPointer = 14; 
+        } else {
+            const overlap = allSets[i-1].slice(-5);
+            let nieuweWoorden = [];
+            for (let k = 0; k < 9; k++) {
+                nieuweWoorden.push(gefilterd[currentPointer % gefilterd.length]);
+                currentPointer++;
+            }
+            set = [...overlap, ...nieuweWoorden];
+        }
+        allSets.push(set);
+    }
+
+    allSets.forEach((set, i) => {
+        const card = document.createElement('div');
+        card.className = 'set-card';
+        card.innerHTML = `
+            <h3>Série ${i+1}</h3>
+            <p style="color:#888; font-size:14px;">14 woorden (9 nieuwe)</p>
+            <button class="btn" onclick="startSet(${i})">🚀 Starten</button>
+            <button class="btn btn-secondary" onclick="openEdit(${i})">📝 Woordenlijst</button>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function openEdit(idx) {
+    currentSetIdx = idx;
+    document.getElementById('edit-title').innerText = `Série ${idx + 1} Bewerken`;
+    const tbody = document.getElementById('edit-body');
+    tbody.innerHTML = '';
+    allSets[idx].forEach((word) => addTableRow(word.nl, word.fr));
+    document.getElementById('edit-screen').style.display = 'flex';
+}
+
+function addTableRow(nl = "", fr = "") {
+    const tbody = document.getElementById('edit-body');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td><input type="text" class="edit-nl" value="${nl}"></td>
+        <td><input type="text" class="edit-fr" value="${fr}"></td>
+        <td><button onclick="this.parentElement.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;">✖</button></td>
+    `;
+    tbody.appendChild(row);
+}
+
+function addRow() { addTableRow(); }
+
+function saveAndStart() {
+    const newWords = [];
+    const nlInputs = document.querySelectorAll('.edit-nl');
+    const frInputs = document.querySelectorAll('.edit-fr');
+    nlInputs.forEach((input, i) => {
+        if(input.value.trim() !== "") {
+            newWords.push({ nl: input.value, fr: frInputs[i].value });
+        }
+    });
+    allSets[currentSetIdx] = newWords;
+    closeEdit();
+    startSet(currentSetIdx);
+}
+
+function closeEdit() { document.getElementById('edit-screen').style.display = 'none'; }
+
+function startSet(idx) {
+    currentSetIdx = idx; wordIdx = 0; isPaused = false;
+    document.getElementById('container').style.display = 'none';
+    document.getElementById('exercise').style.display = 'flex';
+    nextWord();
+}
+
+function nextWord() {
+    const set = allSets[currentSetIdx];
+    if (wordIdx >= set.length) { showResults(); return; }
+    
+    timeLeft = 8; 
+    document.getElementById('word-display').innerText = set[wordIdx].nl;
+    document.getElementById('info-header').innerText = `Série ${currentSetIdx+1} — Woord ${wordIdx+1}/${set.length}`;
+    updateTimerBar();
+
+    if (interval) clearInterval(interval);
+    interval = setInterval(() => {
+        if (!isPaused) {
+            timeLeft--; 
+            updateTimerBar();
+            if (timeLeft <= 0) { 
+                wordIdx++; 
+                nextWord(); 
+            }
+        }
+    }, 1000);
+}
+
+function updateTimerBar() {
+    const bar = document.getElementById('timer-bar');
+    bar.style.width = (timeLeft / 8 * 100) + '%';
+    bar.style.backgroundColor = timeLeft < 3 ? 'var(--danger)' : 'var(--success)';
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    document.getElementById('pause-btn').innerText = isPaused ? "Hervatten" : "Pause";
+}
+
+function showResults() {
+    clearInterval(interval);
+    document.getElementById('exercise').style.display = 'none';
+    document.getElementById('result').style.display = 'flex';
+    document.getElementById('res-body').innerHTML = allSets[currentSetIdx].map(w => `
+        <tr><td>${w.nl}</td><td style="color:var(--primary); font-weight:bold;">${w.fr}</td></tr>
+    `).join('');
+}
+</script>
+
+</body>
+</html>
