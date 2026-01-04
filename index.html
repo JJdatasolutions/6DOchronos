@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Entraînement Vocabulaire Pelckmans</title>
+    <title>Entraînement Vocabulaire CréaFrench</title>
     <style>
         :root { --primary: #3498db; --success: #2ecc71; --danger: #e74c3c; --bg: #121212; --card: #1e1e1e; --accent: #f1c40f; }
         body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
@@ -36,13 +36,13 @@
 <body>
 
 <div id="container">
-    <h1>Entraînement Vocabulaire Pelckmans</h1>
-    <p style="color: #888;">Elke reeks bevat 14 woorden (9 nieuwe + 5 herhalingen).</p>
+    <h1>Entraînement Vocabulaire CréaFrench</h1>
+    <p style="color: #888;">Chaque série contient 14 mots (9 nouveaux + 5 révisions).</p>
     
     <div class="selector-container">
-        <label style="margin-right: 15px;">Kies een Thema:</label>
+        <label style="margin-right: 15px;">Choisir le Thème :</label>
         <select id="trajet-select" onchange="generateSets(this.value)">
-            <option value="">-- Maak een keuze --</option>
+            <option value="">-- Faites uw choix --</option>
             <option value="10">Thème 10 : L'Écologie</option>
             <option value="11">Thème 11 : La Politique & Le Pays</option>
             <option value="12">Thème 12 : Les Études & Métiers</option>
@@ -53,48 +53,48 @@
 </div>
 
 <div id="edit-screen" class="screen">
-    <h2 id="edit-title">Reeks Bewerken</h2>
+    <h2 id="edit-title">Modifier la Série</h2>
     <div class="scroll-area">
         <table id="edit-table">
             <thead>
-                <tr><th>Nederlands</th><th>Frans</th><th>Actie</th></tr>
+                <tr><th>Néerlandais</th><th>Français</th><th>Action</th></tr>
             </thead>
             <tbody id="edit-body"></tbody>
         </table>
-        <button class="btn btn-secondary" onclick="addRow()" style="margin-top:10px;">+ Woord toevoegen</button>
+        <button class="btn btn-secondary" onclick="addRow()">+ Ajouter un mot</button>
     </div>
     <div style="display:flex; gap:15px; width: 90%; max-width: 500px; margin-top: 20px;">
-        <button class="btn" onclick="saveAndStart()">🚀 Opslaan en Starten</button>
-        <button class="btn btn-secondary" onclick="closeEdit()">Annuleren</button>
+        <button class="btn" onclick="saveAndStart()">🚀 Enregistrer et Commencer</button>
+        <button class="btn btn-secondary" onclick="closeEdit()">Annuler</button>
     </div>
 </div>
 
 <div id="exercise" class="screen">
     <div id="info-header" style="font-size: 1.2rem; color: #aaa;"></div>
     <div id="timer-container"><div id="timer-bar"></div></div>
-    <div id="word-display">Laden...</div>
+    <div id="word-display">Chargement...</div>
     <div style="display:flex; gap:15px;">
         <button class="btn" style="width:140px; background:#555;" id="pause-btn" onclick="togglePause()">Pause</button>
-        <button class="btn" style="width:140px; background:var(--danger);" onclick="location.reload()">Stoppen</button>
+        <button class="btn" style="width:140px; background:var(--danger);" onclick="location.reload()">Arrêter</button>
     </div>
 </div>
 
 <div id="result" class="screen">
-    <h2 style="color: var(--success);">Reeks voltooid!</h2>
+    <h2 style="color: var(--success);">Série terminée !</h2>
     <div class="scroll-area">
         <table>
-            <thead><tr><th>Nederlands</th><th>Frans</th></tr></thead>
+            <thead><tr><th>Néerlandais</th><th>Français</th></tr></thead>
             <tbody id="res-body"></tbody>
         </table>
     </div>
-    <button class="btn" style="margin-top: 20px; width:250px;" onclick="location.reload()">Terug naar menu</button>
+    <button class="btn" style="margin-top: 20px; width:250px;" onclick="location.reload()">Retour au menu</button>
 </div>
 
 <script>
 const woordenLijst = [
-    // --- L'ÉCOLOGIE - Thema ID: 10 ---
+    // --- L'ÉCOLOGIE (10) ---
     {t:10, nl:"de bescherming van het milieu", fr:"la protection de l'environnement"},
-    {t:10, nl:"de bescherming van het milieu (behoud)", fr:"la sauvegarde de l'environnement"},
+    {t:10, nl:"het behoud van het milieu", fr:"la sauvegarde de l'environnement"},
     {t:10, nl:"de planeet beschermen", fr:"protéger la planète"},
     {t:10, nl:"het klimaat redden", fr:"sauver le climat"},
     {t:10, nl:"het respect voor de natuur", fr:"le respect de la nature"},
@@ -104,8 +104,8 @@ const woordenLijst = [
     {t:10, nl:"de duurzame ontwikkeling", fr:"le développement durable"},
     {t:10, nl:"de groene economie", fr:"l'économie verte"},
     {t:10, nl:"een uitdaging voor het milieu", fr:"un défi environnemental"},
-    {t:10, nl:"het recycleren / recycleren", fr:"le recyclage / recycler"},
-    {t:10, nl:"het hergebruik / hergebruiken", fr:"la récupération / récupérer"},
+    {t:10, nl:"het recycleren", fr:"le recyclage / recycler"},
+    {t:10, nl:"het hergebruik", fr:"la récupération / récupérer"},
     {t:10, nl:"het afval sorteren", fr:"trier les déchets"},
     {t:10, nl:"het sorteren", fr:"le tri sélectief"},
     {t:10, nl:"zero waste", fr:"le zéro déchet"},
@@ -116,10 +116,13 @@ const woordenLijst = [
     {t:10, nl:"de ecologische ramp", fr:"le désastre écologique"},
     {t:10, nl:"vervuilen", fr:"polluer"},
     {t:10, nl:"de vervuilende producten", fr:"les produits polluants"},
+    {t:10, nl:"schadelijk voor het milieu", fr:"néfaste pour l'environnement"},
     {t:10, nl:"de ontbossing", fr:"la déforestation"},
-    {t:10, nl:"giftig", fr:"toxique"},
+    {t:10, nl:"de gezondheid in gevaar brengen", fr:"mettre en danger la santé"},
+    {t:10, nl:"giftig / schadelijk", fr:"toxique / nocif"},
     {t:10, nl:"de opwarming van de aarde", fr:"le réchauffement climatique"},
     {t:10, nl:"het smelten van de ijskappen", fr:"la fonte des glaciers"},
+    {t:10, nl:"de zeespiegelstijging", fr:"la hausse du niveau des mers"},
     {t:10, nl:"de droogte", fr:"la sécheresse"},
     {t:10, nl:"de hittegolf", fr:"la canicule"},
     {t:10, nl:"de luchtvervuiling", fr:"la pollution atmosphérique"},
@@ -127,88 +130,116 @@ const woordenLijst = [
     {t:10, nl:"de CO2 uitstoot", fr:"les émissions de CO2"},
     {t:10, nl:"de vervuilingspiek", fr:"le pic de pollution"},
     {t:10, nl:"bedreigde diersoorten", fr:"les espèces animales menacées"},
+    {t:10, nl:"de fossiele brandstoffen", fr:"l'énergie fossile"},
     {t:10, nl:"de hernieuwbare energie", fr:"l'énergie renouvelable"},
     {t:10, nl:"de energetische overgang", fr:"la transition énergétique"},
+    {t:10, nl:"overstroming / noodweer", fr:"inondation / intempéries"},
     {t:10, nl:"zonnepanelen installeren", fr:"installer des panneaux solaires"},
-    {t:10, nl:"investeren in windmolens", fr:"investir dans des éoliennes"},
+    {t:10, nl:"windmolens", fr:"les éoliennes"},
     {t:10, nl:"carpoolen", fr:"faire du covoiturage"},
+    {t:10, nl:"biolabel", fr:"labellisés bio"},
 
-    // --- LA POLITIQUE - Thema ID: 11 ---
+    // --- LA POLITIQUE (11) ---
     {t:11, nl:"een burger", fr:"un citoyen / une citoyenne"},
-    {t:11, nl:"rechten en plichten hebben", fr:"avoir des droits et des devoirs"},
+    {t:11, nl:"rechten en plichten", fr:"des droits et des devoirs"},
     {t:11, nl:"het volk", fr:"le peuple"},
     {t:11, nl:"de bevolking", fr:"la population"},
+    {t:11, nl:"de inwoners", fr:"les habitants"},
+    {t:11, nl:"een Frans staatsburger", fr:"un ressortissant français"},
     {t:11, nl:"vaderlandsliefde", fr:"le patriotisme"},
-    {t:11, nl:"de scheiding tussen Kerk en Staat", fr:"la séparation des Églises et de l'État"},
-    {t:11, nl:"verkozen worden door het volk", fr:"être élu par le peuple"},
+    {t:11, nl:"Frankrijk is een seculiere Staat", fr:"la France est un État laïc"},
+    {t:11, nl:"de scheiding Kerk en Staat", fr:"la séparation des Églises et de l'État"},
+    {t:11, nl:"verbod religieuze tekens", fr:"l'interdiction des signes religieux"},
+    {t:11, nl:"verkozen worden", fr:"être élu"},
     {t:11, nl:"stemmen op", fr:"voter pour"},
     {t:11, nl:"een stembureau", fr:"un bureau de vote"},
     {t:11, nl:"een blanco stem", fr:"un vote blanc"},
     {t:11, nl:"het stemrecht", fr:"le droit de vote"},
     {t:11, nl:"de stemplicht", fr:"le vote obligatoire"},
+    {t:11, nl:"algemeen stemrecht", fr:"le suffrage universel"},
+    {t:11, nl:"de stembus", fr:"l'urne"},
+    {t:11, nl:"een stem (voice)", fr:"une voix"},
     {t:11, nl:"de democratie", fr:"la démocratie"},
     {t:11, nl:"de dictatuur", fr:"la dictature"},
+    {t:11, nl:"de monarchie", fr:"la Monarchie"},
     {t:11, nl:"de Republiek", fr:"la République"},
     {t:11, nl:"de President", fr:"le Président"},
     {t:11, nl:"de Grondwet", fr:"la Constitution"},
-    {t:11, nl:"de scheiding der machten", fr:"la séparation des pouvoirs"},
-    {t:11, nl:"de wetgevende macht", fr:"le pouvoir législatif"},
-    {t:11, nl:"de uitvoerende macht", fr:"le pouvoir exécutif"},
-    {t:11, nl:"de rechterlijke macht", fr:"le pouvoir judiciaire"},
-    {t:11, nl:"de politieke leiders", fr:"les dirigeants politiques"},
+    {t:11, nl:"scheiding der machten", fr:"la séparation des pouvoirs"},
+    {t:11, nl:"wetgevende macht", fr:"le pouvoir législatif"},
+    {t:11, nl:"uitvoerende macht", fr:"le pouvoir exécutif"},
+    {t:11, nl:"rechterlijke macht", fr:"le pouvoir judiciaire"},
     {t:11, nl:"het land besturen", fr:"diriger le pays"},
     {t:11, nl:"de regering / regeren", fr:"le government / gouverner"},
     {t:11, nl:"de Eerste Minister", fr:"le Premier Ministre"},
     {t:11, nl:"een volksvertegenwoordiger", fr:"un député"},
     {t:11, nl:"de wetten stemmen", fr:"voter les lois"},
     {t:11, nl:"een wetsvoorstel", fr:"une proposition de loi"},
-    {t:11, nl:"de linkse en rechtse partijen", fr:"les partis de gauche et de droite"},
-    {t:11, nl:"extreem rechts / links", fr:"l'extrême-droite / l'extrême-gauche"},
+    {t:11, nl:"de meerderheid", fr:"la majorité"},
+    {t:11, nl:"de Senaat", fr:"le Sénat"},
+    {t:11, nl:"partijen links/rechts", fr:"les partis de gauche / de droite"},
     {t:11, nl:"de Europese Unie", fr:"l'Union Européenne"},
     {t:11, nl:"het leger", fr:"l'armée"},
-    {t:11, nl:"de sociale ongelijkheid", fr:"les inégalités sociales"},
-    {t:11, nl:"dakloos zijn / een SDF", fr:"être sans-abri / un SDF"},
-    {t:11, nl:"strijden tegen discriminatie", fr:"lutter contre les discriminations"},
+    {t:11, nl:"de politie", fr:"la police"},
+    {t:11, nl:"sociale ongelijkheid", fr:"les inégalités sociales"},
+    {t:11, nl:"dakloos zijn / SDF", fr:"être sans-abri / un SDF"},
+    {t:11, nl:"zonder papieren", fr:"un sans-papier"},
+    {t:11, nl:"racisme / discriminatie", fr:"le racisme / la discrimination"},
+    {t:11, nl:"vrouwenhaat", fr:"la misogynie"},
+    {t:11, nl:"gelijkheid (pariteit)", fr:"la parité"},
+    {t:11, nl:"de staatsstructuur", fr:"la structure de l'État"},
+    {t:11, nl:"de gewesten", fr:"les régions"},
+    {t:11, nl:"de gemeenschappen", fr:"les communautés"},
     {t:11, nl:"de taalgrens", fr:"la frontière linguistique"},
-    {t:11, nl:"Minister van Buitenlandse Zaken", fr:"le Ministre des Affaires Étrangères"},
-    {t:11, nl:"Asiel en Migratie", fr:"l'Asile et la Migration"},
+    {t:11, nl:"Buitenlandse Zaken", fr:"les Affaires Étrangères"},
 
-    // --- ÉTUDES & MÉTIERS - Thema ID: 12 ---
-    {t:12, nl:"de kleuterschool / lagere school", fr:"l'école maternelle / primaire"},
+    // --- ÉTUDES & MÉTIERS (12) ---
+    {t:12, nl:"kleuter- / lagere school", fr:"l'école maternelle / primaire"},
     {t:12, nl:"de scholier", fr:"l'écolier, l'écolière"},
-    {t:12, nl:"de meester / de juf", fr:"le maître / la maîtresse"},
-    {t:12, nl:"de middelbare school", fr:"l'école secondaire"},
-    {t:12, nl:"het 6de middelbaar (rhetorica)", fr:"la rhéto"},
-    {t:12, nl:"het eindexamen (Frankrijk)", fr:"le baccalauréat"},
+    {t:12, nl:"leraar (lager onderwijs)", fr:"l'instituteur / l'institutrice"},
+    {t:12, nl:"de meester / juf", fr:"le maître / la maîtresse"},
+    {t:12, nl:"middelbare school (BE)", fr:"l'école secondaire"},
+    {t:12, nl:"het college / atheneum", fr:"le collège / l'athénée"},
+    {t:12, nl:"het 6de middelbaar (BE)", fr:"la rhéto"},
+    {t:12, nl:"middenschool (FR 11-15j)", fr:"le collège"},
+    {t:12, nl:"lyceum (FR 15-18j)", fr:"le lycée"},
+    {t:12, nl:"het eindexamen (FR)", fr:"le bac / le baccalauréat"},
     {t:12, nl:"les geven", fr:"enseigner"},
-    {t:12, nl:"het hoger onderwijs", fr:"l'enseignement supérieur"},
-    {t:12, nl:"de hogeschool / universiteit", fr:"la haute école / l'université"},
-    {t:12, nl:"de bachelor / master", fr:"le bachelier / le master"},
-    {t:12, nl:"de universiteitscampus", fr:"le campus universitaire"},
-    {t:12, nl:"het lessenrooster", fr:"l'horaire / l'emploi du temps"},
+    {t:12, nl:"opvoeder / opzichter", fr:"éducateur / surveillant"},
+    {t:12, nl:"hoger onderwijs", fr:"l'enseignement supérieur"},
+    {t:12, nl:"hogeschool / universiteit", fr:"la haute école / l'université"},
+    {t:12, nl:"bachelor / master", fr:"le bachelier / le master"},
+    {t:12, nl:"de student(e)", fr:"un étudiant / une étudiante"},
+    {t:12, nl:"lessenrooster", fr:"l'horaire / l'emploi du temps"},
     {t:12, nl:"vreemde talen", fr:"les langues étrangères"},
     {t:12, nl:"wiskunde / aardrijkskunde", fr:"les maths / la géographie"},
-    {t:12, nl:"wetenschappen", fr:"les sciences"},
+    {t:12, nl:"geschiedenis / economie", fr:"l'histoire / l'économie"},
+    {t:12, nl:"wetenschappen", fr:"les sciences (physique, chimie, bio)"},
+    {t:12, nl:"LO / sportles", fr:"le cours de gym / d'édu physique"},
     {t:12, nl:"afstandsonderwijs", fr:"le cours à distance"},
-    {t:12, nl:"een examen afleggen", fr:"passer un examen"},
+    {t:12, nl:"examen afleggen", fr:"passer un examen"},
     {t:12, nl:"ijverig / aandachtig", fr:"appliqué / attentif"},
-    {t:12, nl:"zijn best doen", fr:"faire de son mieux"},
+    {t:12, nl:"hand opsteken / participeren", fr:"lever la main / participer"},
+    {t:12, nl:"notities nemen", fr:"prendre des notes"},
+    {t:12, nl:"best doen / vooruitgang boeken", fr:"faire de son mieux / des progrès"},
+    {t:12, nl:"babbelziek / brutaal / lui", fr:"bavard / insolent / paresseux"},
     {t:12, nl:"spijbelen", fr:"sécher les cours"},
-    {t:12, nl:"slagen voor zijn jaar", fr:"réussir son année"},
-    {t:12, nl:"zakken / een herexamen hebben", fr:"rater son année / un examen de passage"},
-    {t:12, nl:"zijn diploma behalen", fr:"obtenir son diplôme"},
+    {t:12, nl:"slagen / buizen", fr:"réussir / rater"},
+    {t:12, nl:"herexamen", fr:"un examen de passage"},
+    {t:12, nl:"diploma behalen", fr:"obtenir / décrocher son diplôme"},
     {t:12, nl:"op kot zitten", fr:"être en kot"},
     {t:12, nl:"blokken / de blok", fr:"bloquer / le blocus"},
-    {t:12, nl:"studies verpleging", fr:"études d'infirmier"},
-    {t:12, nl:"studies rechten / geneeskunde", fr:"études de droit / de médecine"},
+    {t:12, nl:"hoorcollege / auditorium", fr:"cours magistral / amphi"},
+    {t:12, nl:"verpleging / kinesist", fr:"infirmier / kiné"},
+    {t:12, nl:"ingenieur / rechten", fr:"ingénieur / droit"},
     {t:12, nl:"handelaar / verkoper", fr:"commerçant / vendeur"},
     {t:12, nl:"kok / ober / technieker", fr:"cuisinier / serveur / technicien"},
-    {t:12, nl:"dokter / verpleger", fr:"médecin / infirmier"},
-    {t:12, nl:"apotheker / tandarts / dierenarts", fr:"pharmacien / dentiste / vétérinaire"},
+    {t:12, nl:"dokter / psycholoog", fr:"médecin / psychologue"},
+    {t:12, nl:"tandarts / dierenarts", fr:"dentiste / vétérinaire"},
     {t:12, nl:"advocaat / notaris / jurist", fr:"avocat / notaire / juriste"},
-    {t:12, nl:"steward(es) / piloot", fr:"steward / pilote"},
-    {t:12, nl:"journalist / schrijver / muzikant", fr:"journaliste / écrivain / musicien"},
-    {t:12, nl:"ambtenaar / vertaler / ingenieur", fr:"fonctionnaire / traducteur / ingénieur"}
+    {t:12, nl:"politieagent / steward", fr:"agent de police / steward"},
+    {t:12, nl:"journalist / schrijver", fr:"journaliste / écrivain"},
+    {t:12, nl:"ambtenaar / vertaler", fr:"fonctionnaire / traducteur"}
 ];
 
 let allSets = [];
@@ -223,7 +254,6 @@ function generateSets(themaNum) {
     allSets = [];
     let currentPointer = 0;
 
-    // Genereer 10 reeksen
     for (let i = 0; i < 10; i++) {
         let set = [];
         if (i === 0) {
@@ -248,9 +278,9 @@ function generateSets(themaNum) {
         card.className = 'set-card';
         card.innerHTML = `
             <h3>Série ${i+1}</h3>
-            <p style="color:#888; font-size:14px;">14 woorden (9 nieuwe)</p>
-            <button class="btn" onclick="startSet(${i})">🚀 Starten</button>
-            <button class="btn btn-secondary" onclick="openEdit(${i})">📝 Woordenlijst</button>
+            <p style="color:#888; font-size:14px;">14 mots (9 nouveaux)</p>
+            <button class="btn" onclick="startSet(${i})">🚀 Commencer</button>
+            <button class="btn btn-secondary" onclick="openEdit(${i})">📝 Voir la liste</button>
         `;
         grid.appendChild(card);
     });
@@ -258,7 +288,7 @@ function generateSets(themaNum) {
 
 function openEdit(idx) {
     currentSetIdx = idx;
-    document.getElementById('edit-title').innerText = `Série ${idx + 1} Bewerken`;
+    document.getElementById('edit-title').innerText = `Modifier Série ${idx + 1}`;
     const tbody = document.getElementById('edit-body');
     tbody.innerHTML = '';
     allSets[idx].forEach((word) => addTableRow(word.nl, word.fr));
@@ -307,7 +337,7 @@ function nextWord() {
     
     timeLeft = 8; 
     document.getElementById('word-display').innerText = set[wordIdx].nl;
-    document.getElementById('info-header').innerText = `Série ${currentSetIdx+1} — Woord ${wordIdx+1}/${set.length}`;
+    document.getElementById('info-header').innerText = `Série ${currentSetIdx+1} — Mot ${wordIdx+1}/${set.length}`;
     updateTimerBar();
 
     if (interval) clearInterval(interval);
@@ -331,7 +361,7 @@ function updateTimerBar() {
 
 function togglePause() {
     isPaused = !isPaused;
-    document.getElementById('pause-btn').innerText = isPaused ? "Hervatten" : "Pause";
+    document.getElementById('pause-btn').innerText = isPaused ? "Reprendre" : "Pause";
 }
 
 function showResults() {
@@ -345,5 +375,4 @@ function showResults() {
 </script>
 
 </body>
-
 </html>
